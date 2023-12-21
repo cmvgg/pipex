@@ -1,53 +1,43 @@
-#include "../includes/pipex_bonus.h"
+#include "pipex_bonus.h"
 
-static void	creat_pipes(t_ppxb *pipex)
+void	finish(int stdin_dup, int stdout_dup, int n)
 {
 	int	i;
 
-	i = 0;
-	while (i < pipex->cmd_nmbs - 1)
-	{
-		if (pipe(pipex->pipe + 2 * i) < 0)
-			parent_free(pipex);
-		i++;
-	}
+	dup2(stdin_dup, 0);
+	dup2(stdout_dup, 1);
+	close(stdin_dup);
+	close(stdout_dup);
+	i = -1;
+	while (++i < n)
+		wait(NULL);
 }
 
-void	close_pipes(t_ppxb *pipex)
+int	main(int ac, char **av, char **envp)
 {
 	int	i;
+	int	is_here_doc;
+	int	stdin_dup;
+	int	stdout_dup;
 
-	i = 0;
-	while (i < (pipex->pipe_nmbs))
+	if (ac < 5)
+		perror_exit("argument error");
+	i = 1;
+	is_here_doc = 0;
+	if (ft_strncmp(av[1], "here_doc", 8 + 1) == 0)
 	{
-		close(pipex->pipe[i]);
-		i++;
+		if (ac < 6)
+			perror_exit("argument error");
+		here_doc(av[2], "/tmp/here_doc");
+		is_here_doc = 1;
+		i = 2;
 	}
-}
-
-int	main(int argc, char *argv[], char *envp[])
-{
-	t_ppxb	pipex;
-
-	if (argc < args_in(argv[1], &pipex))
-		return (msg(ERR_INPUT));
-	get_infile(argv, &pipex);
-	get_outfile(argv[argc - 1], &pipex);
-	pipex.cmd_nmbs = argc - 3 - pipex.here_doc;
-	pipex.pipe_nmbs = 2 * (pipex.cmd_nmbs - 1);
-	pipex.pipe = (int *)malloc(sizeof(int) * pipex.pipe_nmbs);
-	if (!pipex.pipe)
-		msg_error(ERR_PIPE);
-	pipex.env_path = find_path(envp);
-	pipex.cmd_paths = ft_split(pipex.env_path, ':');
-	if (!pipex.cmd_paths)
-		pipe_free(&pipex);
-	creat_pipes(&pipex);
-	pipex.idx = -1;
-	while (++(pipex.idx) < pipex.cmd_nmbs)
-		child(pipex, argv, envp);
-	close_pipes(&pipex);
-	waitpid(-1, NULL, 0);
-	parent_free(&pipex);
+	stdin_dup = dup(0);
+	stdout_dup = dup(1);
+	start_process(av, envp, ++i, is_here_doc);
+	while (++i < ac - 2)
+		middle_process(av, envp, i);
+	last_process(av, envp, i, is_here_doc);
+	finish(stdin_dup, stdout_dup, ac - 3 - is_here_doc);
 	return (0);
 }

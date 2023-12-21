@@ -1,51 +1,44 @@
-#SETUP
-NAME		=	pipex
-CC			=	gcc
-FLAGS		=	-Wall -Wextra -Werror -fsanitize=leak -g3
-RM			=	rm -rf
+NAME			= pipex
 
-#FILES AND PATH
-HEADER_SRCS	=	pipex.h pipex_bonus.h
-HEADER_DIR	=	includes/
-HEADER		=	$(addprefix $(HEADER_DIR), $(HEADER_SRCS))
+SRCS			= ./mandatory/pipex.c \
+				./mandatory/utils.c
 
-MPATH_SRCS	=	pipex.c childs.c error.c free.c
-MPATH_DIR	=	mandatory/
-MPATH		=	$(addprefix $(MPATH_DIR), $(MPATH_SRCS))
-OBJ_M		=	$(MPATH:.c=.o)
+BONUS_SRCS 		= ./bonus/pipex_bonus.c \
+				./bonus/utils_bonus.c \
+				./bonus/execute_bonus.c \
 
-BPATH_SRCS	=	pipex_bonus.c error_bonus.c here_doc_bonus.c\
-				files_bonus.c free_bonus.c child_bonus.c
-BPATH_DIR	=	bonus/
-BPATH		=	$(addprefix $(BPATH_DIR), $(BPATH_SRCS))
-OBJ_B		=	$(BPATH:.c=.o)
+HEADER			= ./mandatory/pipex.h
 
-FUNC_SRCS	=	ft_strncmp.c ft_strdup.c ft_split.c ft_strjoin.c
-FUNC_DIR	=	functions/
-FUNC 		=	$(addprefix $(FUNC_DIR), $(FUNC_SRCS))\
-				gnl/get_next_line_utils.c gnl/get_next_line.c
-OBJ_F		=	$(FUNC:.c=.o)
+BONUS_HEADER	= ./bonus/pipex_bonus.h
 
-#COMMANDS
-%.o: %.c $(HEADER) Makefile
-				@${CC} ${FLAGS} -c $< -o $@
+CC				= cc
+CFLAGS			= -Wall -Wextra -Werror
+RM				= rm -f
 
-$(NAME):		$(OBJ_F) $(OBJ_M)
-				@$(CC) $(OBJ_F) $(OBJ_M) -o $(NAME)
+LIBS			= -L ./ft_printf -lftprintf
+
+OBJS			= $(SRCS:.c=.o)
+
+BONUS_OBJS		= $(BONUS_SRCS:.c=.o)
+
+$(NAME):		$(OBJS) $(HEADER)
+					@make all -C ./ft_printf
+					@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
+
+bonus:			$(BONUS_OBJS) $(BONUS_HEADER)
+					@make all -C ./ft_printf
+					@$(CC) $(CFLAGS) $(BONUS_OBJS) -o $(NAME) $(LIBS)
 
 all:			$(NAME)
 
-bonus:			$(OBJ_F) $(OBJ_B)
-				@$(CC) $(OBJ_F) $(OBJ_B) -o $(NAME)
-
 clean:
-				@$(RM) $(OBJ_M)
-				@$(RM) $(OBJ_F)
-				@$(RM) $(OBJ_B)
+				@$(RM) $(OBJS)
+				@$(RM) $(BONUS_OBJS)
+					@make fclean -C ./ft_printf
 
 fclean:			clean
-				@$(RM) $(NAME)
+					@$(RM) $(NAME) $(OBJS)
 
 re:				fclean all
 
-.PHONY:		all clean fclean bonus re
+.PHONY:			bonus all clean fclean re
