@@ -25,15 +25,19 @@ $(NAME):		$(OBJS) $(HEADER)
 					@make all -C ./ft_printf
 					@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 
-#bonus:			$(BONUS_OBJS) $(BONUS_HEADER)
-#					@make all -C ./ft_printf
-#					@$(CC) $(CFLAGS) $(BONUS_OBJS) -o $(NAME) $(LIBS)
+bonus:			$(BONUS_OBJS) $(BONUS_HEADER)
+					@make all -C ./ft_printf
+					@$(CC) $(CFLAGS) $(BONUS_OBJS) -o $(NAME) $(LIBS)
 
 all:			$(NAME)
 
+run_test: 
+		chmod +x test/test_automatized1.sh
+		./test/test_automatized1.sh
+
 clean:
 				@$(RM) $(OBJS)
-#				@$(RM) $(BONUS_OBJS)
+				@$(RM) $(BONUS_OBJS)
 					@make fclean -C ./ft_printf
 
 fclean:			clean
