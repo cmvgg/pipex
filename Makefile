@@ -34,6 +34,14 @@ all:			$(NAME)
 run_test: 
 		chmod +x test/test_automatized1.sh
 		./test/test_automatized1.sh
+		chmod +x test/test_makefile.sh
+		./test/test_makefile.sh > logs/makefile.log
+		chmod +x test/test_funtional.sh
+		./test/test_funtional.sh
+		chmod +x test/test_funtional2.sh
+		./test/test_funtional2.sh
+		chmod +x test/test_stress.sh
+		./test/test_stress.sh
 
 clean:
 				@$(RM) $(OBJS)
@@ -42,6 +50,7 @@ clean:
 
 fclean:			clean
 					@$(RM) $(NAME) $(OBJS)
+				rm outfile_shell logs/*
 
 re:				fclean all
 
