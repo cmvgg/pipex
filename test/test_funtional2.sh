@@ -102,3 +102,12 @@ generate_specialc_infile
 run_test "limit_special_characters" \
 	"./pipex in.txt 'cat' 'wc' outfile_pipex" \
 	"bash -c 'cat in.txt | wc  > outfile_shell'"
+
+
+# 8. Archivos de entrada corruptos
+echo "Creando archivo corrupto..."
+echo -e "hello\x00world" > corrupt_in.txt
+run_test "limit_corrupt_input" \
+	"./pipex corrupt_in.txt 'cat' 'wc' outfile_pipex" \
+	"bash -c 'cat corrupt_in.txt | wc  > outfile_shell'"
+rm corrupt_in.txt

@@ -57,5 +57,31 @@ run_test "stress_multiple_pipes" \
 	"./pipex in.txt 'cat' 'sort' 'uniq' 'wc' outfile_pipex" \
 	"bash -c 'cat in.txt | cat | sort | uniq | wc > outfile_shell'"
 
+# 4. Datos ultra grandes (1GB)
+echo "Generando archivo de 1GB..."
+dd if=/dev/urandom of=in.txt bs=1M count=1024
+run_test "stress_1GB_file" \
+	"./pipex in.txt 'cat' 'wc' outfile_pipex" \
+	"bash -c 'cat in.txt | cat | wc > outfile_shell'"
+
+# 5. Ejecuciones simultáneas masivas (100 procesos concurrentes)
+echo "Iniciando ejecuciones simultáneas..."
+for i in {1..100}; do
+    ./pipex /dev/null 'echo test' 'wc' "exits/big_out_$i.txt" &
+done
+wait
+echo "[PASS] simultanean test" >> $log_file
+
+# 3. Tiempo prolongado (10,000 iteraciones en bucle)
+echo "Pruebas de tiempo prolongado..."
+for i in {1..10000}; do
+    ./pipex /dev/null 'echo test' 'wc' /dev/null
+    if [ $? -ne 0 ]; then
+		echo "[FAIL] time test" >> $log_file
+        break
+    fi
+done
+echo "[PASS] time test" >> $log_file
+
 make clean
 echo "Pruebas de estrés completadas. Revisa los resultados en $log_file y exits/"
