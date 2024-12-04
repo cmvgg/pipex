@@ -1,7 +1,0 @@
-[PASS] Archivo vacío (ls | wc)
-[PASS] Archivo grande (cat | wc)
-[PASS] Archivo con caracteres especiales (grep á | wc)
-[PASS] Comando inválido (cmd_fail | wc)
-[PASS] Múltiples pipes (cat | sort | uniq | wc)
-[PASS] Archivo sin permisos de lectura (cat | wc)
-[PASS] Archivo sin permisos (cat | wc)

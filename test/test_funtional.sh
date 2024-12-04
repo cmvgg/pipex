@@ -1,5 +1,7 @@
 #!/bin/bash
 
+touch outfile_pipex
+touch outfile_shell
 echo "=== Pruebas Funcionales Profundas ==="
 
 # Función para generar in.txt dinámicamente
@@ -55,8 +57,7 @@ run_test "Múltiples pipes (ls | sort | wc)" \
     "bash -c 'cat in.txt | ls | sort | wc > outfile_shell'"
 fi
 
-make re
-
+make
 # 4. Errores intencionales: Comando inválido
 run_test "Comando inválido (invalid_cmd | wc)" \
     "./pipex in.txt 'invalid_cmd' 'wc' outfile_pipex" \

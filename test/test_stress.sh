@@ -1,55 +1,61 @@
 #!/bin/bash
 
-# Crear directorios para los resultados
 mkdir -p logs exits
 
-log_file="logs/stress_tests.log"
+log_file="logs/stress_test.log"
 > $log_file
 
-# Función para registrar resultados de las pruebas
 log_result() {
     local test_name=$1
     local status=$2
     echo "[$(date)] $test_name: $status" >> $log_file
 }
 
-# Función para ejecutar una prueba y guardar resultados
 run_test() {
-    local test_name=$1
-    local command=$2
-    local output_file="exits/${test_name}.txt"
+    test_name=$1
+    pipex_command=$2
+    shell_command=$3
 
     echo "--- Ejecutando prueba: $test_name ---"
-    eval "$command" > $output_file 2>&1
+    eval "$pipex_command" 2>/dev/null
+    eval "$shell_command" 2>/dev/null
 
-    if [ $? -eq 0 ]; then
-        log_result "$test_name" "PASS"
+    if diff outfile_pipex outfile_shell &>/dev/null; then
+        echo "[PASS] $test_name" >> $log_file
     else
-        log_result "$test_name" "FAIL"
+        echo "[FAIL] $test_name" >> $log_file
+        echo "Differences:" >> $log_file
+        diff outfile_pipex outfile_shell >> $log_file
     fi
 }
-
-# Pruebas de estrés
 
 # 1. Ejecuciones simultáneas con datos grandes
 generate_large_infile() {
     echo "Generando archivo grande para pruebas..."
-    base64 /dev/urandom | head -c $((1024 * 1024 * 512)) > in.txt # 512MB
+    base64 /dev/urandom | head -c $((1024 * 1024 * 254)) > in.txt # 254MB
     echo "Archivo in.txt generado."
 }
 
 generate_large_infile
-run_test "stress_large_file_cat_wc" "./pipex in.txt 'cat' 'wc' outfile_pipex"
+run_test 
+run_test "stress_large_file_cat_wc"  \
+    "./pipex in.txt 'cat' 'wc' outfile_pipex" \
+    "bash -c 'cat in.txt | cat | wc > outfile_shell'"
 
 # 2. Ejecuciones en bucle
 echo "Iniciando pruebas de estrés con bucles..."
+base64 /dev/urandom | head -c $((100 * 100 * 100)) > in.txt
 for i in {1..100}; do
-    run_test "stress_loop_$i" "./pipex in.txt 'cat' 'wc' outfile_pipex"
+    run_test "stress_loop_$i" \
+	"./pipex in.txt 'cat' 'wc' outfile_pipex" \
+	"bash -c 'cat in.txt | cat | wc > outfile_shell'"
 done
 
 # 3. Prueba con múltiples pipes y archivos grandes
-run_test "stress_multiple_pipes" "./pipex in.txt 'cat' 'sort' 'uniq' 'wc' outfile_pipex"
+generate_large_infile
+run_test "stress_multiple_pipes" \
+	"./pipex in.txt 'cat' 'sort' 'uniq' 'wc' outfile_pipex" \
+	"bash -c 'cat in.txt | cat | sort | uniq | wc > outfile_shell'"
 
-# Limpieza
-rm -f in.txt
+make clean
 echo "Pruebas de estrés completadas. Revisa los resultados en $log_file y exits/"

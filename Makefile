@@ -28,7 +28,7 @@ $(NAME):		$(OBJS) $(HEADER)
 bonus:			$(BONUS_OBJS) $(BONUS_HEADER)
 					@make all -C ./ft_printf
 					@$(CC) $(CFLAGS) $(BONUS_OBJS) -o $(NAME) $(LIBS)
-
+ 
 all:			$(NAME)
 
 run_test: 
@@ -46,12 +46,16 @@ run_test:
 clean:
 				@$(RM) $(OBJS)
 				@$(RM) $(BONUS_OBJS)
-					@make fclean -C ./ft_printf
+				@make fclean -C ./ft_printf
+				rm -f outfile_shell
+				rm -f in.txt
+				rm -f outfile_pipex 
 
-fclean:			clean
-					@$(RM) $(NAME) $(OBJS)
-				rm outfile_shell logs/*
+fclean:		clean
+				@$(RM) $(NAME) $(OBJS)
+				rm -rf logs
+				rm -rf exits
 
-re:				fclean all
+re:			fclean all
 
-.PHONY:			all clean fclean re
+.PHONY:		all clean fclean re

@@ -65,19 +65,20 @@ else
     ((contador_rev++))
       tput setaf 1
         echo "prueba no superada (si el comando es ps o ps aux el diff da error pero es normal)"
+		echo "prueba no superada MANDATORY (si el comando es ps o ps aux el diff da error pero es normal)" >> exits/automatized1.txt
+		echo "La prueba realizada es: ./pipex in "\"$comando1"\" "\"$comando2"\" out 
+		" >> exits/automatized1.txt
       tput sgr0
     fi
 fi 
-  echo "La prueba realizada es: ./pipex in "\"$comando1"\" "\"$comando2"\" out 
-  
-  "
+  echo "La prueba realizada es: ./pipex in "\"$comando1"\" "\"$comando2"\" out "
 rm -rf ./out
 rm -rf ./bash.txt
 done
 
 
 
-echo -e "Ejecución finalizada con "$num_pruebas" pruebas:" >> logs/automatized1.log
+echo "Ejecución MANDATORY finalizada con "$num_pruebas" pruebas:" > logs/automatized1.log
 
 tput setaf 2 
       echo ""$contador_succ" superadas"  >> logs/automatized1.log
@@ -154,6 +155,9 @@ else
     ((contador_rev++))
       tput setaf 1
         echo "prueba no superada (si el comando es ps o ps aux el diff da error pero es normal)"
+		echo "prueba no superada BONUS (si el comando es ps o ps aux el diff da error pero es normal)" >> exits/automatized1.txt
+		echo "La prueba realizada es: ./pipex in "\"$comando1"\" "\"$comando2"\" out 
+		" >> exits/automatized1.txt
       tput sgr0
     fi
 fi 

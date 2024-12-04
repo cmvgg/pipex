@@ -20,6 +20,12 @@ generate_special_infile() {
     echo "Archivo con caracteres especiales generado: in.txt"
 }
 
+generate_specialc_infile() {
+    echo "Generando archivo con patrones y caracteres límite..."
+    printf "%s\n" "a" "aaaaaaaaaaaaaaaaaaaaaaa" "汉字仮名交じり文" > in.txt
+    echo "Archivo in.txt generado."
+}
+
 run_test() {
     description=$1
     pipex_command=$2
@@ -90,3 +96,9 @@ run_test "Archivo sin permisos (cat | wc)" \
     "./pipex in.txt 'cat' 'wc' outfile_pipex" \
     "bash -c 'cat in.txt | wc > outfile_shell'"
 chmod +rxw in.txt
+
+# 7. Pruebas de caracteres límite
+generate_specialc_infile
+run_test "limit_special_characters" \
+	"./pipex in.txt 'cat' 'wc' outfile_pipex" \
+	"bash -c 'cat in.txt | wc  > outfile_shell'"
