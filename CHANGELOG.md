@@ -1,4 +1,5 @@
-ab764e1 - Cesar Manuel Varela Garcia, 34 minutes ago : Correcciones de linting 04/12/2024--11:17
+61aa987 - Cesar Manuel Varela Garcia, 39 seconds ago : Correcciones de linting 04/12/2024--11:51
+ab764e1 - Cesar Manuel Varela Garcia, 35 minutes ago : Correcciones de linting 04/12/2024--11:17
 10c95e9 - Cesar Manuel Varela Garcia, 21 hours ago : Correcciones de linting 03/12/2024--14:23
 d267fd0 - Cesar Manuel Varela Garcia, 2 days ago : Correcciones de linting 02/12/2024--14:17
 9650be3 - Cesar Manuel Varela Garcia, 2 days ago : Correcciones de linting 02/12/2024--14:00
