@@ -35,7 +35,7 @@ run_test:
 		chmod +x test/test_automatized1.sh
 		./test/test_automatized1.sh
 		chmod +x test/test_makefile.sh
-		./test/test_makefile.sh > logs/makefile.log
+		./test/test_makefile.sh
 		chmod +x test/test_funtional.sh
 		./test/test_funtional.sh
 		chmod +x test/test_funtional2.sh
@@ -47,12 +47,15 @@ clean:
 				@$(RM) $(OBJS)
 				@$(RM) $(BONUS_OBJS)
 				@make fclean -C ./ft_printf
-				rm -f outfile_shell
-				rm -f in.txt
-				rm -f outfile_pipex 
+ 
 
 fclean:		clean
 				@$(RM) $(NAME) $(OBJS)
+				
+fclean2:	fclean
+				rm -f outfile_shell
+				rm -f in.txt
+				rm -f outfile_pipex
 				rm -rf logs
 				rm -rf exits
 
